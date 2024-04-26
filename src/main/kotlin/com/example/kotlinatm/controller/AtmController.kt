@@ -5,6 +5,7 @@ import com.example.kotlinatm.entity.TransactionRequest
 import com.example.kotlinatm.service.AtmService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,9 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@CrossOrigin(origins = ["*"])
 class AtmController {
     @Autowired
     lateinit var AtmService: AtmService
+
+    @GetMapping("/account")
+    fun account(): ResponseEntity<List<Account>> {
+        val response = AtmService.account()
+        return ResponseEntity.ok().body(response)
+    }
 
     @PostMapping("/createAccount")
     fun createAccount(@RequestBody account: Account): ResponseEntity<Map<String, Any>> {
@@ -23,9 +31,22 @@ class AtmController {
         return ResponseEntity.ok().body(response)
     }
 
+    @PostMapping("/loginAccount")
+    fun loginAccount(@RequestBody account: Account): ResponseEntity<Map<String, Any>> {
+        val response = AtmService.loginAccount(account)
+        return ResponseEntity.ok().body(response)
+    }
+
     @PostMapping("/getAccount/{accountNo}")
     fun getAccountNo(@PathVariable("accountNo") accountNo: String): ResponseEntity<Map<String, Any>> {
         val response = AtmService.getAccountNo(accountNo)
+        return ResponseEntity.ok().body(response)
+    }
+
+    @PutMapping("/updateAccount/{accountNo}")
+    fun updateAccount(@PathVariable("accountNo") accountNo: String,
+                      @RequestBody account: Account): ResponseEntity<Map<String, Any>> {
+        val response = AtmService.updateAccount(accountNo, account)
         return ResponseEntity.ok().body(response)
     }
 
